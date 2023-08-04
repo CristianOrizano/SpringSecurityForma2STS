@@ -1,4 +1,4 @@
-package com.examencl2.service;
+package com.examencl2.security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,46 +44,6 @@ public class UsuarioService implements UserDetailsService {
 		return us;
 	}
 
-	public Usuario findBynombreusuario(String username) {
-
-		return repository.findByUsername(username);
-	}
-	
-	//update or add
-	public void grabar(Usuario usu) {
-		
-		
-		repository.save(usu);
-	}
-	//listar usuarios
-	public List<Usuario> listarusua() {
-			
-	   return repository.findAll();
-	}
-		//delete user
-	public void eliminar(int cod) {
-			repository.deleteById(cod);
-	}
-	
-	//search to update
-	public Usuario buscarUser(int cod) {
- 
-		 return  repository.findById(cod).orElse(null);
-	}
-	
-	/*public Usuario buscarUser(int cod) {
-		Usuario us = null;
-		us =  repository.findById(cod).orElse(null);
-		  return us;
-	}*/
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

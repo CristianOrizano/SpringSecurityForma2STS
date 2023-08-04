@@ -15,8 +15,8 @@ public class ElectroService {
 	private ElectroRepository repo;
 
 	// graba o actualiza
-	public void grabar(Producto bean) {
-		repo.save(bean);
+	public Producto grabar(Producto bean) {
+		return repo.save(bean);
 	}
 
 	public void eliminar(Integer cod) {

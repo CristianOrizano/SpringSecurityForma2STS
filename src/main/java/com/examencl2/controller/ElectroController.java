@@ -16,25 +16,29 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.examencl2.entity.Boleta;
 import com.examencl2.entity.Producto;
 import com.examencl2.entity.Usuario;
+import com.examencl2.security.UsuarioService;
 import com.examencl2.service.BoletaService;
 import com.examencl2.service.ElectroService;
-import com.examencl2.service.UsuarioService;
+import com.examencl2.service.IUsuarioService;
 
 @Controller
 @RequestMapping("/electro")
 public class ElectroController {
+	
+	String URL_PRODUCTO= "http://localhost:8091/apielec/api";
 
 	@Autowired
 	ElectroService serviceelec;
 
 	@Autowired
-	UsuarioService serusu;
+	IUsuarioService serusu;
 
 	@Autowired
 	BoletaService serbole;
@@ -42,10 +46,18 @@ public class ElectroController {
 	@RequestMapping("/lis")
 	public String inicio(Model model) {
 
-		List<Producto> data = serviceelec.listarTodos();
+		// List<Producto> data= serviceelec.listarTodos();
+		RestTemplate res = new RestTemplate();
+		Producto[] productos = res.getForObject(URL_PRODUCTO, Producto[].class);
+         System.out.println("entro aquie=========");
+         for (Producto pr : productos) {
+        	 System.out.println("datos "+ pr.getNombre() );
+		}
+       
+		
 		Producto el = new Producto();
 
-		model.addAttribute("lista", data);
+		model.addAttribute("lista", productos);
 		model.addAttribute("elec", el);
 		return "crud";
 	}
@@ -53,9 +65,11 @@ public class ElectroController {
 	@RequestMapping("/catalogo")
 	public String catalogo(Model model) {
 
-		List<Producto> data = serviceelec.listarTodos();
+		// List<Producto> data= serviceelec.listarTodos();
+		RestTemplate res = new RestTemplate();
+		Producto[] productos = res.getForObject(URL_PRODUCTO, Producto[].class);
 
-		model.addAttribute("lista", data);
+		model.addAttribute("lista", productos);
 
 		return "cataloo";
 	}
@@ -63,9 +77,14 @@ public class ElectroController {
 	@RequestMapping("/selecDeta")
 	public String detalle(Model model, @RequestParam("txtcodigo") int cod) {
 
-		Producto ele = serviceelec.buscar(cod);
-		model.addAttribute("elec", ele);
+		//Producto ele= serviceelec.buscar(cod);
 
+		 String ruta = URL_PRODUCTO+"/" + cod;
+	     RestTemplate res = new RestTemplate();
+	     Producto producto = res.getForObject(ruta, Producto.class);
+		
+		model.addAttribute("elec",producto);
+		
 		return "detalle";
 	}
 
@@ -99,7 +118,11 @@ public class ElectroController {
 
 		try {
 			int cod = elec.getCodigo();
-			serviceelec.grabar(elec);
+
+			// serviceelec.grabar(elec);
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.postForObject(URL_PRODUCTO, elec, Producto.class);
+			
 			if (cod == 0) {
 				redirect.addFlashAttribute("MENSAJE", "Registro exitoso");
 			} else {
@@ -118,17 +141,23 @@ public class ElectroController {
 	@ResponseBody
 	// convertir ese medicamento que retorna aun json
 	public Producto buscar(@RequestParam("codigo") int cod) {
-		Producto m = serviceelec.buscar(cod);
-		System.out.println("nombre enntro==" + m.getNombre());
-
-		return m;
+		//Producto m= serviceelec.buscar(cod); 
+		 String ruta = URL_PRODUCTO+"/" + cod;
+	     RestTemplate res = new RestTemplate();
+	     Producto producto = res.getForObject(ruta, Producto.class);
+		
+		
+		return producto;
 	}
 
 	// metodo eliminar
 	@RequestMapping("/eliminar")
 	public String Eliminar(@RequestParam("codigo") int cod, RedirectAttributes redirect) {
 		try {
-			serviceelec.eliminar(cod);
+			//serviceelec.eliminar(cod);
+			 String ruta = URL_PRODUCTO+"/" + cod;
+		     RestTemplate res = new RestTemplate();
+		        res.delete(ruta);
 			redirect.addFlashAttribute("MENSAJE", "Eliminado exitoso");
 
 		} catch (Exception e) {

@@ -47,12 +47,14 @@ public class SecurityConfig {
 				.authorizeRequests(auth -> {
 			auth.antMatchers("/resources/imagen/**", "/css/**", "/js/**").permitAll()// recursos estaticos
 					.antMatchers("/inicio").permitAll()
-					.antMatchers("/electro/lis", "/electro/grabar", "/electro/buscar", "/electro/eliminar","/usuario/**")
+					.antMatchers("/electro/lis", "/electro/grabar" ,"/electro/buscar", "/electro/eliminar","/usuario/**")
 					.hasAuthority("ADMIN")
 					.antMatchers("/electro/catalogo", "/electro/selecDeta", "/electro/grabarventa")
-					.hasAnyAuthority("USER", "ADMIN").anyRequest().authenticated();
-		})
-
+					.hasAnyAuthority("USER", "ADMIN");
+					//.anyRequest().authenticated();
+		})	
+				 //.httpBasic() // Habilita la autenticación básica
+				 //.and()
 				.formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/inicio")
 
 				.and().exceptionHandling().accessDeniedPage("/errores/403")

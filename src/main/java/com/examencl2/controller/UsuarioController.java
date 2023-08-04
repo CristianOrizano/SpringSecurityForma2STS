@@ -16,15 +16,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.examencl2.entity.Rol;
 import com.examencl2.entity.Usuario;
+import com.examencl2.security.UsuarioService;
+import com.examencl2.service.IUsuarioService;
 import com.examencl2.service.RolService;
-import com.examencl2.service.UsuarioService;
 
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
 	
 	@Autowired
-	UsuarioService ususervice;
+	IUsuarioService ususervice;
 	
 	@Autowired
 	RolService rolservice;

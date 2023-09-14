@@ -51,12 +51,12 @@ public class SecurityConfig {
 					.hasAuthority("ADMIN")
 					.antMatchers("/electro/catalogo", "/electro/selecDeta", "/electro/grabarventa")
 					.hasAnyAuthority("USER", "ADMIN");
-					//.anyRequest().authenticated();
+					//.anyRequest().authenticated(); //si estoy consumiendo el back desabilita
 		})	
 				 //.httpBasic() // Habilita la autenticación básica
 				 //.and()
 				.formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/inicio")
-
+				// Si el usuario va a una ruta sin acceso, devuelve a /error_403 (Configurado)
 				.and().exceptionHandling().accessDeniedPage("/errores/403")
 				.and().logout().invalidateHttpSession(true)
 				.clearAuthentication(true).logoutSuccessUrl("/login?logout").permitAll()
